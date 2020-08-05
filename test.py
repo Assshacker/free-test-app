@@ -75,17 +75,18 @@ class Database():
         if currentTask["key"] == "S" or currentTask["key"] == "Q":
             startchar = self.doc.paragraphs[qline].text.strip()[0]
             if startchar == "R" or startchar == "L":
-                answCounter = 0
-                while self.doc.paragraphs[qline].text.strip().startswith(startchar):
-                    answCounter += 1
+                currentTask["key"] = "C"
+                while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
+                    right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
+                    currentTask["answers"][right.strip()] = answ.strip()
                     qline += 1
-                print(answCounter)
-            else:
+            else: 
                 while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
                     right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
                     currentTask["answers"][answ.strip()] = right.strip()
                     qline += 1
-                return currentTask
+            print(currentTask)
+            return currentTask
         elif currentTask["key"] == "C":
             print(1)
         elif currentTask["key"] == "O":
@@ -250,6 +251,12 @@ class QuequeQuestionWindow(QtWidgets.QWidget):
                 return False
         return True
 
+class ConformityQuestionWindow(QtWidgets.QWidget):
+    def __init__(self, currentTask,  parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.currentTask = currentTask
+        self.questLabel = QtWidgets.Qlabel(self.currentTask["question"]
+
 
 class FirstWindow(QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -320,6 +327,8 @@ class SecondWindow(QtWidgets.QWidget):
                 self.taskWindow = SingleQuestionWindow(self.task)
             elif self.task["key"] == "Q":
                 self.taskWindow = QuequeQuestionWindow(self.task)
+            elif self.task["key"] == "C":
+                self.taskWindow = ConformityQuestionWindow(self.task)
 
             self.cancelButton = QtWidgets.QPushButton("Выход")
             self.cancelButton.clicked.connect(self.cancel)
@@ -397,3 +406,7 @@ if __name__ == "__main__":
     window.show()
     sys.exit(app.exec_())
        
+#startchar = self.doc.paragraphs[qline].text.strip()[0]
+#            
+#                while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
+#            else:
