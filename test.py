@@ -255,7 +255,37 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
     def __init__(self, currentTask,  parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.currentTask = currentTask
-        self.questLabel = QtWidgets.Qlabel(self.currentTask["question"]
+        Llist = []
+        Rlist =[]
+        LlistEqual = {}
+        RlistEqual = {}
+        self.questLabel = QtWidgets.QLabel(self.currentTask["question"])
+        self.mainGrid = QtWidgets.QGridLayout()
+        for i in list(self.currentTask["answers"].items()):
+            if i[0][0] == "L":
+                Llist.append(i)
+            else:
+                Rlist.append(i)
+        print(Llist)
+        print(Rlist)
+        for i in Llist:
+            for a in Llist:
+                if i == a:
+                    continue
+                else:
+                    if i[1] == a[1]:
+                        LlistEqual[i[0]] = a[0]
+        for i in Rlist:
+            for a in Rlist:
+                if i == a:
+                    continue
+                else:
+                    if i[1] == a[1]:
+                        RlistEqual[i[0]] = a[0]
+
+        print(LlistEqual)
+        print(RlistEqual)
+
 
 
 class FirstWindow(QtWidgets.QWidget):
