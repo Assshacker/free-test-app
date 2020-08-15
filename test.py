@@ -85,7 +85,7 @@ class Database():
                     right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
                     currentTask["answers"][answ.strip()] = right.strip()
                     qline += 1
-            print(currentTask)
+            #print(currentTask)
             return currentTask
         elif currentTask["key"] == "C":
             print(1)
@@ -255,19 +255,27 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
     def __init__(self, currentTask,  parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.currentTask = currentTask
+
         Llist = []
         Rlist =[]
         LlistEqual = {}
         RlistEqual = {}
+        maxList = None
+        self.staticAnswers = []
+        self.dinamicAnswers = []
+        self.resultSlov = {}
+        minKey = None
+
         self.questLabel = QtWidgets.QLabel(self.currentTask["question"])
         self.mainGrid = QtWidgets.QGridLayout()
+        self.mainGrid.addWidget(self.questLabel, 0, 0, 1, 2)
+
         for i in list(self.currentTask["answers"].items()):
             if i[0][0] == "L":
                 Llist.append(i)
             else:
                 Rlist.append(i)
-        print(Llist)
-        print(Rlist)
+
         for i in Llist:
             for a in Llist:
                 if i == a:
@@ -275,6 +283,7 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
                 else:
                     if i[1] == a[1]:
                         LlistEqual[i[0]] = a[0]
+
         for i in Rlist:
             for a in Rlist:
                 if i == a:
@@ -283,9 +292,100 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
                     if i[1] == a[1]:
                         RlistEqual[i[0]] = a[0]
 
-        print(LlistEqual)
-        print(RlistEqual)
+        if len(LlistEqual) == 0:
+            minKey = "L"
+            for i in range(len(Llist)):
+                self.resultSlov[Llist[i][1]] = Rlist[i][1]
+        elif len(RlistEqual) == 0:
+            minKey = "R"
+            for i in range(len(Rlist)):
+                self.resultSlov[Rlist[i][1]] = Llist[i][1]
 
+        raz = len(Llist) - len(Rlist)
+        if raz < 0:
+            for i in range(1, (abs(raz)+1)):
+                self.resultSlov[Rlist[-i][1]] = "w"+str(i)
+                
+        print(self.resultSlov)
+
+        Llist.clear() #список для статичных объектов
+        Rlist.clear()#для динамичных
+
+        for i in list(self.resultSlov.values()):
+            if not i.startswith("w"):
+                Llist.append(i)
+        
+        for i in list(self.resultSlov.keys()):
+            Rlist.append(i)
+
+        random.shuffle(Llist)
+        random.shuffle(Rlist)
+        #print(Llist)
+        #print(Rlist)
+
+        cs = len(Llist)
+
+        if cs == 1:
+            self.answLabel1 = QtWidgets.QLabel("1")
+            self.staticAnswers.append(self.answLabel1)
+        elif cs == 2:
+            self.answLabel1 = QtWidgets.QLabel("1")
+            self.staticAnswers.append(self.answLabel1)
+            self.answLabel2 = QtWidgets.QLabel("2")
+            self.staticAnswers.append(self.answLabel2)
+        elif cs == 3:
+            self.answLabel1 = QtWidgets.QLabel("1")
+            self.staticAnswers.append(self.answLabel1)
+            self.answLabel2 = QtWidgets.QLabel("2")
+            self.staticAnswers.append(self.answLabel2)
+            self.answLabel3 = QtWidgets.QLabel("3")
+            self.staticAnswers.append(self.answLabel3)
+        elif cs == 4:
+            self.answLabel1 = QtWidgets.QLabel("1")
+            self.staticAnswers.append(self.answLabel1)
+            self.answLabel2 = QtWidgets.QLabel("2")
+            self.staticAnswers.append(self.answLabel2)
+            self.answLabel3 = QtWidgets.QLabel("3")
+            self.staticAnswers.append(self.answLabel3)
+            self.answLabel4 = QtWidgets.QLabel("4")
+            self.staticAnswers.append(self.answLabel4)
+        elif cs == 5:
+            self.answLabel1 = QtWidgets.QLabel("1")
+            self.staticAnswers.append(self.answLabel1)
+            self.answLabel2 = QtWidgets.QLabel("2")
+            self.staticAnswers.append(self.answLabel2)
+            self.answLabel3 = QtWidgets.QLabel("3")
+            self.staticAnswers.append(self.answLabel3)
+            self.answLabel4 = QtWidgets.QLabel("4")
+            self.staticAnswers.append(self.answLabel4)
+            self.answLabel5 = QtWidgets.QLabel("5")
+            self.staticAnswers.append(self.answLabel5)
+        elif cs == 6:
+            self.answLabel1 = QtWidgets.QLabel("1")
+            self.staticAnswers.append(self.answLabel1)
+            self.answLabel2 = QtWidgets.QLabel("2")
+            self.staticAnswers.append(self.answLabel2)
+            self.answLabel3 = QtWidgets.QLabel("3")
+            self.staticAnswers.append(self.answLabel3)
+            self.answLabel4 = QtWidgets.QLabel("4")
+            self.staticAnswers.append(self.answLabel4)
+            self.answLabel5 = QtWidgets.QLabel("5")
+            self.staticAnswers.append(self.answLabel5)
+            self.answLabel6 = QtWidgets.QLabel("6")
+            self.staticAnswers.append(self.answLabel6)
+
+        print(self.staticAnswers)
+
+        for i in range(len(self.staticAnswers)):
+            print("Задаю текст - "+str(Llist[i]))
+            self.staticAnswers[i].setText(Llist[i])
+
+        for i in range(len(self.staticAnswers)):
+            print("Ячейка "+str(i))
+            print(self.staticAnswers[i])
+            self.mainGrid.addWidget(self.staticAnswers[i],i+1,0)
+
+        self.setLayout(self.mainGrid)
 
 
 class FirstWindow(QtWidgets.QWidget):
