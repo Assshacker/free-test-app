@@ -41,6 +41,26 @@ def ModalWindowBackward():
 
 #-----------------------------------------------------------------------
 
+class TroubleWindow(QtWidgets.QWidget):
+    def __init__(self,trLogList, parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.trLogList = trLogList
+        trLog = self.trLogList[0]
+        problemText = self.trLogList[1]
+
+        self.trLabelText = QtWidgets.QLabel(problemText)
+        self.trLabel = QtWidgets.QLabel(trLog)
+
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.vbox.addWidget(self.trLabelText)
+        self.vbox.addWidget(self.trLabel)
+
+        self.setLayout(self.vbox)
+
+    def checkAnswer(self):
+        return True
+
+
 class Database():
     def __init__(self, file_docx):
         self.file_docx = file_docx
@@ -64,33 +84,47 @@ class Database():
             self.status = 1 
 
     def parser(self):
-        currentTask = {}
-        #qline = random.choice(self.bankOfQuestions)#строчка с "S:"
-        qline = 3
-        print("случайная строчка: "+str(qline))
-        currentTask["key"] = self.doc.paragraphs[qline].text[0]#присваиваем значение вначале строки: S, Q, O, и тд
-        currentTask["question"] = self.doc.paragraphs[qline].text[2:]#призваиваем вопрос
-        currentTask["answers"] = {}
-        qline += 1
-        if currentTask["key"] == "S" or currentTask["key"] == "Q":
-            startchar = self.doc.paragraphs[qline].text.strip()[0]
-            if startchar == "R" or startchar == "L":
-                currentTask["key"] = "C"
-                while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
-                    right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
-                    currentTask["answers"][right.strip()] = answ.strip()
-                    qline += 1
-            else: 
-                while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
-                    right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
-                    currentTask["answers"][answ.strip()] = right.strip()
-                    qline += 1
-            #print(currentTask)
-            return currentTask
-        elif currentTask["key"] == "C":
-            print(1)
-        elif currentTask["key"] == "O":
-            print(2)
+        try:
+            currentTask = {}
+            #qline = random.choice(self.bankOfQuestions)#строчка с "S:"
+            qline = 1184
+            startqline = qline
+            print("случайная строчка: "+str(qline))
+            currentTask["key"] = self.doc.paragraphs[qline].text[0]#присваиваем значение вначале строки: S, Q, O, и тд
+            currentTask["question"] = self.doc.paragraphs[qline].text[2:]#призваиваем вопрос
+            currentTask["answers"] = {}
+            qline += 1
+            if currentTask["key"] == "S" or currentTask["key"] == "Q":
+                startchar = self.doc.paragraphs[qline].text.strip()[0]
+                if startchar == "R" or startchar == "L":
+                    currentTask["key"] = "C"
+                    while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
+                        right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
+                        currentTask["answers"][right.strip()] = answ.strip()
+                        qline += 1
+                else: 
+                    #while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
+                        #print(self.doc.paragraphs[qline].text)
+                        #qline += 1
+                    while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
+                        right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
+                        currentTask["answers"][answ.strip()] = right.strip()
+                        qline += 1
+                print(currentTask)
+                return 0, currentTask
+            elif currentTask["key"] == "C":
+                print(1)
+            elif currentTask["key"] == "O":
+                print(2)
+        except:
+            trLog = traceback.format_exc()
+            textProblem = " "
+            qline = startqline
+            while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
+                textProblem = textProblem + self.doc.paragraphs[qline].text + "\n"
+                qline += 1
+            return 1, [trLog, textProblem]
+
 
 class ResultWindow(QtWidgets.QWidget):
     def __init__(self,result, parent=None):
@@ -306,7 +340,7 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
             for i in range(1, (abs(raz)+1)):
                 self.resultSlov[Rlist[-i][1]] = "w"+str(i)
                 
-        print(self.resultSlov)
+        #print(self.resultSlov)
 
         Llist.clear() #теперь список для значений для статичных текстовых полей
         Rlist.clear()#а это значения для виджета выборки
@@ -495,7 +529,6 @@ class SecondWindow(QtWidgets.QWidget):
         self.vbox = QtWidgets.QVBoxLayout()
         self.database = Database(currentFile)
         self.database.load_file()
-        self.task = self.database.parser()
         
         
         if self.database.status == 1:
@@ -507,16 +540,22 @@ class SecondWindow(QtWidgets.QWidget):
             self.vbox.addWidget(self.cancelButton)
 
         elif self.database.status == 0:
-            self.statusCountLabel = QtWidgets.QLabel(" ")
-            if self.task["key"] == "S":
-                self.taskWindow = SingleQuestionWindow(self.task)
-            elif self.task["key"] == "Q":
-                self.taskWindow = QuequeQuestionWindow(self.task)
-            elif self.task["key"] == "C":
-                self.taskWindow = ConformityQuestionWindow(self.task)
+            trStatus, self.task = self.database.parser()
+            print(trStatus)
+            if trStatus == 1:
+                self.taskWindow = TroubleWindow(self.task)
+            else:
+                if self.task["key"] == "S":
+                    self.taskWindow = SingleQuestionWindow(self.task)
+                elif self.task["key"] == "Q":
+                    self.taskWindow = QuequeQuestionWindow(self.task)
+                elif self.task["key"] == "C":
+                    self.taskWindow = ConformityQuestionWindow(self.task)
 
             self.cancelButton = QtWidgets.QPushButton("Выход")
             self.cancelButton.clicked.connect(self.cancel)
+
+            self.statusCountLabel = QtWidgets.QLabel(" ")
 
             self.checkButton = QtWidgets.QPushButton("Проверить")
             self.checkButton.clicked.connect(self.check)
