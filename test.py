@@ -308,8 +308,8 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
                 
         print(self.resultSlov)
 
-        Llist.clear() #список для статичных объектов
-        Rlist.clear()#для динамичных
+        Llist.clear() #теперь список для значений для статичных текстовых полей
+        Rlist.clear()#а это значения для виджета выборки
 
         for i in list(self.resultSlov.values()):
             if not i.startswith("w"):
@@ -320,8 +320,7 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
 
         random.shuffle(Llist)
         random.shuffle(Rlist)
-        #print(Llist)
-        #print(Rlist)
+        Rlist.insert(0, "Выберите ответ")
 
         cs = len(Llist)
 
@@ -374,18 +373,74 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
             self.answLabel6 = QtWidgets.QLabel("6")
             self.staticAnswers.append(self.answLabel6)
 
-        print(self.staticAnswers)
-
         for i in range(len(self.staticAnswers)):
-            print("Задаю текст - "+str(Llist[i]))
             self.staticAnswers[i].setText(Llist[i])
 
+        if cs == 1:
+            self.answBox1 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox1)
+        elif cs == 2:
+            self.answBox1 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox1)
+            self.answBox2 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox2)
+        elif cs == 3:
+            self.answBox1 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox1)
+            self.answBox2 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox2)
+            self.answBox3 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox3)
+        elif cs == 4:
+            self.answBox1 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox1)
+            self.answBox2 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox2)
+            self.answBox3 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox3)
+            self.answBox4 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox4)
+        elif cs == 5:
+            self.answBox1 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox1)
+            self.answBox2 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox2)
+            self.answBox3 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox3)
+            self.answBox4 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox4)
+            self.answBox5 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox5)
+        elif cs == 6:
+            self.answBox1 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox1)
+            self.answBox2 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox2)
+            self.answBox3 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox3)
+            self.answBox4 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox4)
+            self.answBox5 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox5)
+            self.answBox6 = QtWidgets.QComboBox()
+            self.dinamicAnswers.append(self.answBox6)
+
+        for i in self.dinamicAnswers:
+            i.addItems(Rlist)
+
         for i in range(len(self.staticAnswers)):
-            print("Ячейка "+str(i))
-            print(self.staticAnswers[i])
             self.mainGrid.addWidget(self.staticAnswers[i],i+1,0)
+            self.mainGrid.addWidget(self.dinamicAnswers[i],i+1,1)
 
         self.setLayout(self.mainGrid)
+
+    def checkAnswer(self):
+        for i in range(len(self.staticAnswers)):
+            if self.resultSlov[self.dinamicAnswers[i].currentText()] == self.staticAnswers[i].text():
+                continue
+            else:
+                return False
+        return True
 
 
 class FirstWindow(QtWidgets.QWidget):
