@@ -106,10 +106,15 @@ class Database():
                     #while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
                         #print(self.doc.paragraphs[qline].text)
                         #qline += 1
+                    pluscnt = 0
                     while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 4:
                         right, answ= self.doc.paragraphs[qline].text.split(":", maxsplit=1)
                         currentTask["answers"][answ.strip()] = right.strip()
+                        if right == "+":
+                            pluscnt += 1
                         qline += 1
+                    if pluscnt > 1:
+                        currentTask["key"] = "M"
                 print(currentTask)
                 return 0, currentTask
             elif currentTask["key"] == "C":
@@ -477,6 +482,118 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
         return True
 
 
+class MultiQuestionWindow(QtWidgets.QWidget):
+    def __init__(self, currentTask,  parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+        self.currentTask = currentTask
+        self.questLabel = QtWidgets.QLabel(self.currentTask["question"])
+        
+        ca = len(self.currentTask["answers"])
+        self.listBox = []
+        
+        if ca == 1:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+        elif ca == 2:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+        elif ca == 3:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+        elif ca == 4:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+        elif ca == 5:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+        elif ca == 6:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+            self.chBox6 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox6)
+        elif ca == 7:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+            self.chBox6 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox6)
+            self.chBox7 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox7)
+        elif ca == 8:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+            self.chBox6 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox6)
+            self.chBox7 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox7)
+            self.chBox8 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox8)
+
+        answtext = list(self.currentTask["answers"].keys())
+        random.shuffle(answtext)
+
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.vbox.addWidget(self.questLabel)
+
+        for i in range(ca):
+            self.listBox[i].setText(answtext[i])
+            self.vbox.addWidget(self.listBox[i])
+
+        self.setLayout(self.vbox)
+
+    def checkAnswer(self):
+        for i in self.listBox:
+            if (i.isChecked()) and (self.currentTask["answers"][i.text()] == "+"):
+                continue
+            elif (not i.isChecked()) and (self.currentTask["answers"][i.text()] == "-"):
+                continue
+            else:
+                return False
+        return True
+
 class FirstWindow(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
@@ -551,6 +668,8 @@ class SecondWindow(QtWidgets.QWidget):
                     self.taskWindow = QuequeQuestionWindow(self.task)
                 elif self.task["key"] == "C":
                     self.taskWindow = ConformityQuestionWindow(self.task)
+                elif self.task["key"] == "M":
+                    self.taskWindow = MultiQuestionWindow(self.task)
 
             self.cancelButton = QtWidgets.QPushButton("Выход")
             self.cancelButton.clicked.connect(self.cancel)
