@@ -86,8 +86,8 @@ class Database():
     def parser(self):
         try:
             currentTask = {}
-            #qline = random.choice(self.bankOfQuestions)#строчка с "S:"
-            qline = 1184
+            qline = random.choice(self.bankOfQuestions)#строчка с "S:"
+            #qline = 1118
             startqline = qline
             print("случайная строчка: "+str(qline))
             currentTask["key"] = self.doc.paragraphs[qline].text[0]#присваиваем значение вначале строки: S, Q, O, и тд
@@ -475,6 +475,8 @@ class ConformityQuestionWindow(QtWidgets.QWidget):
 
     def checkAnswer(self):
         for i in range(len(self.staticAnswers)):
+            if self.dinamicAnswers[i].currentText() == "Выберите ответ":
+                return False
             if self.resultSlov[self.dinamicAnswers[i].currentText()] == self.staticAnswers[i].text():
                 continue
             else:
@@ -657,19 +659,10 @@ class SecondWindow(QtWidgets.QWidget):
             self.vbox.addWidget(self.cancelButton)
 
         elif self.database.status == 0:
-            trStatus, self.task = self.database.parser()
-            print(trStatus)
-            if trStatus == 1:
-                self.taskWindow = TroubleWindow(self.task)
-            else:
-                if self.task["key"] == "S":
-                    self.taskWindow = SingleQuestionWindow(self.task)
-                elif self.task["key"] == "Q":
-                    self.taskWindow = QuequeQuestionWindow(self.task)
-                elif self.task["key"] == "C":
-                    self.taskWindow = ConformityQuestionWindow(self.task)
-                elif self.task["key"] == "M":
-                    self.taskWindow = MultiQuestionWindow(self.task)
+            self.trStatus, self.task = self.database.parser()
+            print(self.trStatus)
+
+            self.variabilityQuestion()
 
             self.cancelButton = QtWidgets.QPushButton("Выход")
             self.cancelButton.clicked.connect(self.cancel)
@@ -724,15 +717,31 @@ class SecondWindow(QtWidgets.QWidget):
             self.isAnswered = False
             self.checkButton.setText("Проверить")
             self.currentQuestion += 1
-            self.task = self.database.parser()
+            self.trStatus, self.task = self.database.parser()
             self.vbox.removeWidget(self.taskWindow)
             self.taskWindow.setParent(None)
             self.taskWindow = None
-            self.taskWindow = SingleQuestionWindow(self.task)
+            self.variabilityQuestion()
             self.vbox.insertWidget(1, self.taskWindow)
             self.updateText()
         else:
             self.endOfTest()
+
+    def variabilityQuestion(self):
+        if self.trStatus == 1:
+            self.taskWindow = TroubleWindow(self.task)
+        else:
+            print(self.task)
+            print(type(self.task))
+            if self.task["key"] == "S":
+                self.taskWindow = SingleQuestionWindow(self.task)
+            elif self.task["key"] == "Q":
+                self.taskWindow = QuequeQuestionWindow(self.task)
+            elif self.task["key"] == "C":
+                self.taskWindow = ConformityQuestionWindow(self.task)
+            elif self.task["key"] == "M":
+                self.taskWindow = MultiQuestionWindow(self.task)
+        
     
     def endOfTest(self):
         listResult = [self.questCounter, self.rightAnswers, self.wrongAnswers]
