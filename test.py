@@ -93,7 +93,7 @@ class Database():
         try:
             currentTask = {}
             qline = random.choice(self.bankOfQuestions)#строчка с "S:"
-            #qline = 1118
+            #qline = 93
             startqline = qline
             print("случайная строчка: "+str(qline))
             currentTask["key"] = self.doc.paragraphs[qline].text[0]#присваиваем значение вначале строки: S, Q, O, и тд
@@ -122,11 +122,14 @@ class Database():
                     if pluscnt > 1:
                         currentTask["key"] = "M"
                 print(currentTask)
+                if len(currentTask["answers"]) == 0:
+                    qline = startqline
+                    textProblem = " "
+                    while (not ("I:" in self.doc.paragraphs[qline].text)) and (not (self.doc.paragraphs[qline].text.isspace())) and len(self.doc.paragraphs[qline].text) >= 3:
+                        textProblem = textProblem + self.doc.paragraphs[qline].text + "\n"
+                        qline += 1
+                    return 1, ["Косячный вопрос", textProblem]
                 return 0, currentTask
-            elif currentTask["key"] == "C":
-                print(1)
-            elif currentTask["key"] == "O":
-                print(2)
         except:
             trLog = traceback.format_exc()
             textProblem = " "
@@ -275,7 +278,96 @@ class QuequeQuestionWindow(QtWidgets.QWidget):
             
             self.qcombo5 = QtWidgets.QComboBox()
             self.qComboList.append(self.qcombo5)
+        elif lencq == 6:
+            self.qcombo1 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo1)
 
+            self.qcombo2 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo2)
+            
+            self.qcombo3 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo3)
+
+            self.qcombo4 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo4)
+            
+            self.qcombo5 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo5)
+
+            self.qcombo6 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo6)
+        elif lencq == 7:
+            self.qcombo1 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo1)
+
+            self.qcombo2 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo2)
+            
+            self.qcombo3 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo3)
+
+            self.qcombo4 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo4)
+            
+            self.qcombo5 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo5)
+
+            self.qcombo6 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo6)
+
+            self.qcombo7 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo7)
+        elif lencq == 8:
+            self.qcombo1 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo1)
+
+            self.qcombo2 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo2)
+            
+            self.qcombo3 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo3)
+
+            self.qcombo4 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo4)
+            
+            self.qcombo5 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo5)
+
+            self.qcombo6 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo6)
+
+            self.qcombo7 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo7)
+
+            self.qcombo8 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo8)
+        elif lencq == 9:
+            self.qcombo1 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo1)
+
+            self.qcombo2 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo2)
+            
+            self.qcombo3 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo3)
+
+            self.qcombo4 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo4)
+            
+            self.qcombo5 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo5)
+
+            self.qcombo6 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo6)
+
+            self.qcombo7 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo7)
+
+            self.qcombo8 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo8)
+
+            self.qcombo9 = QtWidgets.QComboBox()
+            self.qComboList.append(self.qcombo9)
         self.answersFromKeys = list(self.currentTask["answers"].keys())
         random.shuffle(self.answersFromKeys)
         self.answersFromKeys.insert(0, "Выберите ответ")
@@ -581,6 +673,94 @@ class MultiQuestionWindow(QtWidgets.QWidget):
             self.listBox.append(self.chBox7)
             self.chBox8 = QtWidgets.QCheckBox()
             self.listBox.append(self.chBox8)
+        elif ca == 9:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+            self.chBox6 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox6)
+            self.chBox7 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox7)
+            self.chBox8 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox8)
+            self.chBox9 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox9)
+        elif ca == 10:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+            self.chBox6 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox6)
+            self.chBox7 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox7)
+            self.chBox8 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox8)
+            self.chBox9 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox9)
+            self.chBox10 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox10)
+        elif ca == 11:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+            self.chBox6 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox6)
+            self.chBox7 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox7)
+            self.chBox8 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox8)
+            self.chBox9 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox9)
+            self.chBox10 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox10)
+            self.chBox11 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox11)
+        elif ca == 12:
+            self.chBox1 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox1)
+            self.chBox2 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox2)
+            self.chBox3 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox3)
+            self.chBox4 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox4)
+            self.chBox5 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox5)
+            self.chBox6 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox6)
+            self.chBox7 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox7)
+            self.chBox8 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox8)
+            self.chBox9 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox9)
+            self.chBox10 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox10)
+            self.chBox11 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox11)
+            self.chBox12 = QtWidgets.QCheckBox()
+            self.listBox.append(self.chBox12)
 
         answtext = list(self.currentTask["answers"].keys())
         random.shuffle(answtext)
@@ -732,6 +912,7 @@ class SecondWindow(QtWidgets.QWidget):
             self.variabilityQuestion()
             self.vbox.insertWidget(1, self.taskWindow)
             self.updateText()
+            self.resize(80, 80)
         else:
             self.endOfTest()
 
