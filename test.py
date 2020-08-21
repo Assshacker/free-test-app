@@ -18,7 +18,10 @@ import random
 
 def EndOfTesting(lisres):
     global reswin
+    global x
+    global y
     reswin = ResultWindow(lisres)
+    reswin.move(x, y)
     window2.hide()
     reswin.show()
 
@@ -29,9 +32,12 @@ def FromResultToMain():
 
 def ModalWindowForward(window1):
     global window2
+    global x
+    global y
     window2 = SecondWindow(window1.currentFile)
     window2.getCountQuestion(int(window1.questCounter.text()))
     window2.resize(300, 200)
+    window2.move(x, y)
     window1.hide()
     window2.show()
 
@@ -284,6 +290,8 @@ class QuequeQuestionWindow(QtWidgets.QWidget):
         self.setLayout(self.vbox)
     def checkAnswer(self):
         for i in self.qComboList:
+            if i.currentText() == "Выберите ответ":
+                return False
             if (self.qComboList.index(i) + 1) == int(self.currentTask["answers"][i.currentText()]) :
                 continue
             else:
@@ -755,6 +763,10 @@ if __name__ == "__main__":
     window = FirstWindow()
     window.setWindowTitle("testshmest")
     window.resize(300, 200)
+    desktop = QtWidgets.QApplication.desktop()
+    x = (desktop.width() - window.width()) // 2
+    y = (desktop.height() - window.height()) // 2
+    window.move(x, y)
     window.show()
     sys.exit(app.exec_())
        
