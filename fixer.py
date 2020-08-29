@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 import docx
 import os
 import sys
+import traceback
 
 #doc = docx.Document(".//database.docx")
 #new_doc = docx.Document()
@@ -26,15 +27,37 @@ def goToWorkWindow(window):
 class WorkWindow(QtWidgets.QWidget):
     def __init__(self,currentFile,keyss, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
-        self.currentFile = currentFile
-        self.keyss = keyss
-        self.progressLabel = QtWidgets.QLabel("Ход выполнения: ")
+
+        self.currentFile = currentFile#название папки из которой будем брать файл(строка)
+        self.keyss = keyss#ключи получаемые из firstwindow(список)
+        self.path = os.getcwd() + "/"+ self.currentFile + "/database.docx"
+
         self.vbox = QtWidgets.QVBoxLayout()
+
+        self.progressLabel = QtWidgets.QLabel("Ход выполнения: ")
+
+        databaseStatus, trLog = self.loadFile()
+
+        if databaseStatus == 0:
+            print(1)
+
+        else:
+            self.progressLabel.setText(trLog)
+
         self.vbox.addWidget(self.progressLabel)
         self.setLayout(self.vbox)
 
     def parse(self):
         print(1)
+
+    def loadFile(self):
+        try:
+            self.doc = docx.Document(self.path)
+            return 0, ' '
+        except:
+            trLog = traceback.format_exc()
+            print(trLog)
+            return 1, trLog
 
 
 class FirstWindow(QtWidgets.QWidget):
